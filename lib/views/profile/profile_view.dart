@@ -1,16 +1,19 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
+import '../../controllers/media_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 final authController = Get.find<AuthController>();
+final mediaController = Get.find<MediaController>();
 
 class ProfileView extends StatelessWidget {
   ProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.width;
     final spacing = _LocalSpacing(
@@ -31,8 +34,8 @@ class ProfileView extends StatelessWidget {
       textSmall: h * 0.016,
     );
 
-    final double profileSize = MediaQuery.of(context).size.height * 0.12;
-    final user = FirebaseAuth.instance.currentUser;
+    final double profileSize = h * 0.12;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profile"),
@@ -53,7 +56,6 @@ class ProfileView extends StatelessWidget {
           ),
         ),
       ),
-      // No bottom navigation bar
       body: SingleChildScrollView(
         child: Padding(
           padding: padding.page,
@@ -63,50 +65,83 @@ class ProfileView extends StatelessWidget {
               Center(
                 child: Stack(
                   children: [
-                    Container(
-                      width: profileSize,
-                      height: profileSize,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: const DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                            'https://i.pravatar.cc/300?img=5',
+                    Obx(() {
+                      final avatarUrl = authController.appUser.value?.avatarUrl;
+                      if (avatarUrl != null && avatarUrl.isNotEmpty) {
+                        return Container(
+                          width: profileSize,
+                          height: profileSize,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(avatarUrl),
+                            ),
+                            border: Border.all(
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.grey.withOpacity(0.7)
+                                  : Colors.white,
+                              width: 4,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.4),
+                                blurRadius: 15,
+                                spreadRadius: 2,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
                           ),
-                        ),
-                        border: Border.all(
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? Colors.grey.withOpacity(0.7)
-                              : Colors.white,
-                          width: 4,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.4),
-                            blurRadius: 15,
-                            spreadRadius: 2,
-                            offset: const Offset(0, 8),
+                        );
+                      } else {
+                        return Container(
+                          width: profileSize,
+                          height: profileSize,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey[300],
+                            border: Border.all(
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.grey.withOpacity(0.7)
+                                  : Colors.white,
+                              width: 4,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.4),
+                                blurRadius: 15,
+                                spreadRadius: 2,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
+                          child: Icon(Icons.person, color: Colors.grey, size: profileSize * 0.5),
+                        );
+                      }
+                    }),
                     Positioned(
                       bottom: 0,
                       right: 4,
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            width: 4,
+                      child: GestureDetector(
+                        onTap: () async {
+                          if (FirebaseAuth.instance.currentUser == null) return;
+                          await mediaController.pickUploadAndSetAvatar(authController);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              width: 4,
+                            ),
                           ),
-                        ),
-                        child: const Icon(
-                          Icons.camera_alt,
-                          color: Colors.white,
-                          size: 20,
+                          child: const Icon(
+                            Icons.camera_alt,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
                       ),
                     ),
@@ -116,21 +151,27 @@ class ProfileView extends StatelessWidget {
 
               SizedBox(height: spacing.s),
 
-              Text(
-                user?.displayName ?? " ",
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
+              Obx(() {
+                final name = authController.appUser.value?.username ?? " ";
+                return Text(
+                  name,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                );
+              }),
 
               SizedBox(height: spacing.xs),
 
-              Text(
-                "ID : ${user?.uid ?? " "}",
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white.withOpacity(0.6)
-                      : Colors.black.withOpacity(0.6),
-                ),
-              ),
+              Obx(() {
+                final uid = authController.appUser.value?.uid ?? " ";
+                return Text(
+                  "ID : $uid",
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white.withOpacity(0.6)
+                        : Colors.black.withOpacity(0.6),
+                  ),
+                );
+              }),
 
               SizedBox(height: spacing.l),
 
@@ -197,13 +238,13 @@ class ProfileView extends StatelessWidget {
 
   // ================= CARDS (RESPONSIVE) =================
   Widget _buildCard(
-    BuildContext context,
-    String h1,
-    String h2,
-    _LocalSpacing spacing,
-    _LocalSizes sizes, {
-    IconData? icon,
-  }) {
+      BuildContext context,
+      String h1,
+      String h2,
+      _LocalSpacing spacing,
+      _LocalSizes sizes, {
+        IconData? icon,
+      }) {
     return Container(
       padding: EdgeInsets.symmetric(
         vertical: spacing.l * 1.1,
@@ -264,10 +305,10 @@ class ProfileView extends StatelessWidget {
   }
 
   Widget _buildInfoCard(
-    BuildContext context,
-    _LocalSpacing spacing,
-    _LocalSizes sizes,
-  ) {
+      BuildContext context,
+      _LocalSpacing spacing,
+      _LocalSizes sizes,
+      ) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(vertical: spacing.m, horizontal: spacing.m),
@@ -320,13 +361,13 @@ class ProfileView extends StatelessWidget {
   }
 
   Widget _buildInfo(
-    BuildContext context,
-    String h1,
-    String h2,
-    _LocalSpacing spacing,
-    _LocalSizes sizes, {
-    IconData? icon,
-  }) {
+      BuildContext context,
+      String h1,
+      String h2,
+      _LocalSpacing spacing,
+      _LocalSizes sizes, {
+        IconData? icon,
+      }) {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.08,
       child: Row(
@@ -370,14 +411,14 @@ class ProfileView extends StatelessWidget {
 
   // ================= BUTTONS (RESPONSIVE) =================
   Widget _buildPrimaryButton(
-    BuildContext context,
-    _LocalSpacing spacing,
-    _LocalSizes sizes, {
-    required IconData icon,
-    required String label,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
+      BuildContext context,
+      _LocalSpacing spacing,
+      _LocalSizes sizes, {
+        required IconData icon,
+        required String label,
+        required Color color,
+        required VoidCallback onTap,
+      }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -412,10 +453,10 @@ class ProfileView extends StatelessWidget {
   }
 
   Widget _buildLogoutButton(
-    BuildContext context,
-    _LocalSpacing spacing,
-    _LocalSizes sizes,
-  ) {
+      BuildContext context,
+      _LocalSpacing spacing,
+      _LocalSizes sizes,
+      ) {
     return GestureDetector(
       onTap: () {
         authController.logout();

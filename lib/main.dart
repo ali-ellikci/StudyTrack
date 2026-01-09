@@ -7,6 +7,7 @@ import 'package:study_track/controllers/timer_controller.dart';
 import 'package:study_track/controllers/subject_controller.dart';
 import 'package:study_track/controllers/session_controller.dart';
 import 'package:study_track/controllers/post_controller.dart';
+import 'package:study_track/controllers/media_controller.dart';
 import 'package:study_track/firebase_options.dart';
 import 'routes/app_pages.dart';
 import 'theme/app_theme.dart';
@@ -30,6 +31,7 @@ void main() async {
   Get.put(SubjectController());
   Get.put(SessionController());
   Get.put(PostController());
+  Get.put(MediaController(), permanent: true);
   runApp(const MyApp());
 }
 
@@ -42,6 +44,9 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       debugShowCheckedModeBanner: false,
+      locale: Get.deviceLocale,
+      fallbackLocale: const Locale('tr', 'TR'),
+      title: 'app_title'.tr,
       home: AuthGate(),
       getPages: AppPages.pages,
       // Smooth slide transition across all route changes

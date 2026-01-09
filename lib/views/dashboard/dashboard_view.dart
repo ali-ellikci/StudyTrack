@@ -8,7 +8,6 @@ import '../../controllers/subject_controller.dart';
 import 'widgets/header.dart';
 import 'widgets/daily_progress_card.dart';
 import 'widgets/start_session_card.dart';
-import 'widgets/motivation_card.dart';
 import 'widgets/quick_actions/my_goals_button.dart';
 import 'widgets/quick_actions/statistics_button.dart';
 import 'widgets/quick_actions/community_button.dart';
@@ -48,12 +47,10 @@ class DashboardView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                DashboardHeader(userName: appUser.username),
+                DashboardHeader(userName: appUser.username, avatarUrl: appUser.avatarUrl,),
                 const SizedBox(height: dTitleGap),
                 DailyProgressCard(),
                 const SizedBox(height: dSectionGap),
-                // WeeklyGoalCard moved to Stats page
-                // SubjectProgressCard moved to Stats page
                 Text(
                   "Quick Actions",
                   style: theme.textTheme.titleLarge?.copyWith(
