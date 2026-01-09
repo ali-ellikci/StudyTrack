@@ -46,4 +46,12 @@ class UserService {
 
     return AppUser.fromMap(uid, data);
   }
+
+  Future<void> updateAvatarUrl(String uid, String avatarUrl) async {
+    await _db.collection("users").doc(uid).update({
+      "avatarUrl": avatarUrl,
+    });
+  }
+
+
 }

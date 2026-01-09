@@ -3,7 +3,13 @@ import 'package:get/get.dart';
 
 class DashboardHeader extends StatelessWidget {
   final String userName;
-  const DashboardHeader({super.key, required this.userName});
+  final String avatarUrl;
+
+  const DashboardHeader({
+    super.key,
+    required this.userName,
+    required this.avatarUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,12 +20,18 @@ class DashboardHeader extends StatelessWidget {
           onTap: () => Get.toNamed('/profile'),
           child: Stack(
             children: [
-              const CircleAvatar(
+              // Avatar
+              CircleAvatar(
                 radius: 24,
-                backgroundImage: NetworkImage(
-                  'https://i.pravatar.cc/150?img=12',
-                ),
+                backgroundColor: Colors.grey[300],
+                backgroundImage: (avatarUrl.isNotEmpty)
+                    ? NetworkImage(avatarUrl)
+                    : null,
+                child: avatarUrl.isEmpty
+                    ? const Icon(Icons.person, color: Colors.white, size: 24)
+                    : null,
               ),
+              // Online Indicator
               Positioned(
                 bottom: 0,
                 right: 0,
@@ -43,16 +55,11 @@ class DashboardHeader extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text("Welcome back", style: Theme.of(context).textTheme.bodyMedium),
-            Row(
-              children: [
-                Text(
-                  userName,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Text(" 👋"),
-              ],
+            Text(
+              userName,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
