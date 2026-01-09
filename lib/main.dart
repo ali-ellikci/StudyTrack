@@ -6,6 +6,7 @@ import 'package:study_track/controllers/goal_controller.dart';
 import 'package:study_track/controllers/timer_controller.dart';
 import 'package:study_track/controllers/subject_controller.dart';
 import 'package:study_track/controllers/session_controller.dart';
+import 'package:study_track/controllers/post_controller.dart';
 import 'package:study_track/firebase_options.dart';
 import 'routes/app_pages.dart';
 import 'theme/app_theme.dart';
@@ -28,6 +29,7 @@ void main() async {
   Get.put(TimerController(), permanent: true);
   Get.put(SubjectController());
   Get.put(SessionController());
+  Get.put(PostController());
   runApp(const MyApp());
 }
 

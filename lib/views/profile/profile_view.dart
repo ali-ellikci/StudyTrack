@@ -10,9 +10,7 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ================================
-    // Local UI metrics (moved from core/ui)
-    // ================================
+
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.width;
     final spacing = _LocalSpacing(

@@ -137,9 +137,6 @@ class LessonsView extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   if (textCtrl.text.trim().isNotEmpty) {
-                    print(
-                      "BAŞARILI: Eklenecek Ders Adı: ${textCtrl.text.trim()}",
-                    );
                     subjectController.addSubject(name: textCtrl.text.trim());
 
                     Navigator.pop(context);
