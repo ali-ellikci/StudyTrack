@@ -46,7 +46,6 @@ class GoalsView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Goals"),
-        centerTitle: true,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(spacing.xs),
