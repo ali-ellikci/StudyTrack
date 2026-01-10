@@ -15,14 +15,11 @@ import 'views/auth/auth_gate.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Global error logging to avoid silent crashes
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.presentError(details);
-    // Optionally send to analytics/crashlytics here
   };
   WidgetsBinding.instance.platformDispatcher.onError = (error, stack) {
-    debugPrint('[UNCAUGHT] $error\n$stack');
-    return true; // prevent hard crash
+    return true;
   };
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   Get.put(AuthController());
@@ -44,12 +41,10 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       debugShowCheckedModeBanner: false,
-      locale: Get.deviceLocale,
-      fallbackLocale: const Locale('tr', 'TR'),
-      title: 'app_title'.tr,
+      title: 'study_tracker',
       home: AuthGate(),
       getPages: AppPages.pages,
-      // Smooth slide transition across all route changes
+
       defaultTransition: Transition.rightToLeft,
       transitionDuration: const Duration(milliseconds: 280),
     );

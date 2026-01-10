@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import '../../controllers/goal_controller.dart';
-import '../../models/goal_model.dart';
+
 
 class GoalsUiController extends GetxController {
   final GoalController goalController = Get.find();
@@ -17,13 +17,11 @@ class GoalsUiController extends GetxController {
   }
 
   void _loadInitialValues() {
-    // Daily global goal
     final dailyGoal = goalController.getGlobalDailyGoal();
     if (dailyGoal != null) {
       dailySliderVal.value = dailyGoal.targetMinutes / 60.0;
     }
 
-    // Weekly global goal
     final weeklyGoal = goalController.getGlobalWeeklyGoal();
     if (weeklyGoal != null) {
       weeklySliderVal.value = weeklyGoal.targetMinutes / 60.0;

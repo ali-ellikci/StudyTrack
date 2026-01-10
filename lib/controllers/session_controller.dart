@@ -15,13 +15,11 @@ class SessionController extends GetxController with WidgetsBindingObserver {
   @override
   void onInit() {
     WidgetsBinding.instance.addObserver(this);
-    // If user already available, fetch immediately
     final user = _auth.currentUser;
     if (user != null) {
       fetchTotalStudyTime(user.uid);
     }
-
-    // React to auth changes (login/logout) to refresh metrics
+    
     _auth.authStateChanges().listen((u) {
       if (u != null) {
         fetchTotalStudyTime(u.uid);
@@ -56,24 +54,19 @@ class SessionController extends GetxController with WidgetsBindingObserver {
     required subjectId,
     required duration,
   }) async {
-    print(duration);
     await _sessionService.saveSession(
       userId: userId,
       subjectId: subjectId,
       duration: duration,
     );
-    // Save ettikten sonra hemen refresh et
     await fetchTotalStudyTime(userId);
   }
 
   Future<void> fetchTotalStudyTime(String uId) async {
-    print(uId);
     totalStudyTime.value = await _sessionService.getAllStudyTime(uId: uId);
 
-    // Bugünün verisi
     todayStudyTime.value = await _sessionService.getTodayStudyTime(uId: uId);
 
-    // Subject başına veriler
     todayBySubject.value = await _sessionService.getTodayStudyTimeBySubject(
       uId: uId,
     );

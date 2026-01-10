@@ -13,15 +13,13 @@ class GoalController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Load immediately if user already available
     final user = authController.appUser.value;
     if (user != null) {
       final uid = user.uid;
       _loadDailyGoals(uid);
       _loadWeeklyGoals(uid);
     }
-
-    // Also react to future auth changes to ensure initial fetch happens
+    
     ever(authController.appUser, (appUser) {
       if (appUser != null) {
         final uid = appUser.uid;

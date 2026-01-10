@@ -1,33 +1,39 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
 import '../../controllers/media_controller.dart';
+import '../../controllers/session_controller.dart';
+import '../../controllers/goal_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'widgets/local_types.dart';
+import 'widgets/stat_card.dart';
+import 'widgets/info_card.dart';
+import 'widgets/logout_button.dart';
 
 final authController = Get.find<AuthController>();
 final mediaController = Get.find<MediaController>();
+final sessionController = Get.find<SessionController>();
+final goalController = Get.find<GoalController>();
 
 class ProfileView extends StatelessWidget {
-  ProfileView({super.key});
+  const ProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.width;
-    final spacing = _LocalSpacing(
+    final spacing = LocalSpacing(
       xs: h * 0.006,
       s: h * 0.01,
       m: h * 0.014,
       l: h * 0.02,
       xl: h * 0.028,
     );
-    final padding = _LocalPadding(
+    final padding = LocalPadding(
       page: EdgeInsets.symmetric(horizontal: w * 0.06, vertical: h * 0.01),
       section: EdgeInsets.only(top: h * 0.02),
     );
-    final sizes = _LocalSizes(
+    final sizes = LocalSizes(
       logo: h * 0.07,
       icon: h * 0.04,
       socialIcon: h * 0.03,
@@ -52,7 +58,7 @@ class ProfileView extends StatelessWidget {
           child: Divider(
             height: spacing.xs,
             thickness: 1,
-            color: Colors.grey.withOpacity(0.5),
+            color: Colors.grey.withValues(alpha: 0.5),
           ),
         ),
       ),
@@ -61,7 +67,6 @@ class ProfileView extends StatelessWidget {
           padding: padding.page,
           child: Column(
             children: [
-              // PROFILE IMAGE
               Center(
                 child: Stack(
                   children: [
@@ -78,14 +83,16 @@ class ProfileView extends StatelessWidget {
                               image: NetworkImage(avatarUrl),
                             ),
                             border: Border.all(
-                              color: Theme.of(context).brightness == Brightness.dark
-                                  ? Colors.grey.withOpacity(0.7)
+                              color:
+                                  Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.grey.withValues(alpha: 0.7)
                                   : Colors.white,
                               width: 4,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.4),
+                                color: Colors.black.withValues(alpha: 0.4),
                                 blurRadius: 15,
                                 spreadRadius: 2,
                                 offset: const Offset(0, 8),
@@ -101,21 +108,27 @@ class ProfileView extends StatelessWidget {
                             shape: BoxShape.circle,
                             color: Colors.grey[300],
                             border: Border.all(
-                              color: Theme.of(context).brightness == Brightness.dark
-                                  ? Colors.grey.withOpacity(0.7)
+                              color:
+                                  Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.grey.withValues(alpha: 0.7)
                                   : Colors.white,
                               width: 4,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.4),
+                                color: Colors.black.withValues(alpha: 0.4),
                                 blurRadius: 15,
                                 spreadRadius: 2,
                                 offset: const Offset(0, 8),
                               ),
                             ],
                           ),
-                          child: Icon(Icons.person, color: Colors.grey, size: profileSize * 0.5),
+                          child: Icon(
+                            Icons.person,
+                            color: Colors.grey,
+                            size: profileSize * 0.5,
+                          ),
                         );
                       }
                     }),
@@ -125,7 +138,9 @@ class ProfileView extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () async {
                           if (FirebaseAuth.instance.currentUser == null) return;
-                          await mediaController.pickUploadAndSetAvatar(authController);
+                          await mediaController.pickUploadAndSetAvatar(
+                            authController,
+                          );
                         },
                         child: Container(
                           padding: const EdgeInsets.all(12),
@@ -167,8 +182,8 @@ class ProfileView extends StatelessWidget {
                   "ID : $uid",
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white.withOpacity(0.6)
-                        : Colors.black.withOpacity(0.6),
+                        ? Colors.white.withValues(alpha: 0.6)
+                        : Colors.black.withValues(alpha: 0.6),
                   ),
                 );
               }),
@@ -178,56 +193,52 @@ class ProfileView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildCard(
-                    context,
-                    "120h",
-                    "Study Time",
-                    spacing,
-                    sizes,
-                    icon: Icons.timer_outlined,
-                  ),
+                  Obx(() {
+                    final secs = (sessionController.totalStudyTime.value is int)
+                        ? sessionController.totalStudyTime.value as int
+                        : int.tryParse(
+                                sessionController.totalStudyTime.value
+                                    .toString(),
+                              ) ??
+                              0;
+                    final hours = secs ~/ 3600;
+                    final hLabel = hours >= 1
+                        ? "${hours}h"
+                        : "${(secs / 60).ceil()}m";
+                    return StatCard(
+                      h1: hLabel,
+                      h2: "Study Time",
+                      spacing: spacing,
+                      sizes: sizes,
+                      icon: Icons.timer_outlined,
+                    );
+                  }),
                   SizedBox(height: spacing.s),
-                  _buildCard(
-                    context,
-                    "15",
-                    "Goals Met",
-                    spacing,
-                    sizes,
-                    icon: Icons.outlined_flag,
-                  ),
+                  Obx(() {
+                    final met = _computeWeeklyGoalsMet();
+                    return StatCard(
+                      h1: met.toString(),
+                      h2: "Goals Met",
+                      spacing: spacing,
+                      sizes: sizes,
+                      icon: Icons.outlined_flag,
+                    );
+                  }),
                 ],
-              ),
-
-              SizedBox(height: spacing.s),
-
-              _buildCard(
-                context,
-                "4.0",
-                "GPA",
-                spacing,
-                sizes,
-                icon: Icons.school_outlined,
               ),
 
               SizedBox(height: spacing.l),
 
-              _buildInfoCard(context, spacing, sizes),
+              InfoCard(
+                spacing: spacing,
+                sizes: sizes,
+                onEditDepartment: _editDepartment,
+                onEditClass: _editClass,
+              ),
 
               SizedBox(height: spacing.m),
 
-              _buildPrimaryButton(
-                context,
-                spacing,
-                sizes,
-                icon: Icons.edit,
-                label: "Edit Profile",
-                color: Theme.of(context).colorScheme.primary,
-                onTap: () {},
-              ),
-
-              SizedBox(height: spacing.s),
-
-              _buildLogoutButton(context, spacing, sizes),
+              LogoutButton(spacing: spacing, sizes: sizes),
               SizedBox(height: spacing.xl),
             ],
           ),
@@ -236,279 +247,112 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  // ================= CARDS (RESPONSIVE) =================
-  Widget _buildCard(
-      BuildContext context,
-      String h1,
-      String h2,
-      _LocalSpacing spacing,
-      _LocalSizes sizes, {
-        IconData? icon,
-      }) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        vertical: spacing.l * 1.1,
-        horizontal: spacing.xl * 1.1,
-      ),
-      decoration: BoxDecoration(
-        color: Color.lerp(
-          Theme.of(context).scaffoldBackgroundColor,
-          Colors.white,
-          0.05,
-        )!,
-        borderRadius: BorderRadius.circular(spacing.m),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 6,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Text(
-            h1,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.bold,
+  void _editDepartment(BuildContext context) {
+    final current = authController.appUser.value?.department ?? '';
+    final txt = TextEditingController(text: current);
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text('Edit Department'),
+          content: TextField(
+            controller: txt,
+            decoration: const InputDecoration(
+              hintText: 'e.g. Computer Science',
             ),
           ),
-          SizedBox(height: spacing.xs),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (icon != null) ...[
-                Icon(
-                  icon,
-                  size: sizes.icon * 0.5,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.grey
-                      : Colors.black,
-                ),
-                SizedBox(width: spacing.s),
-              ],
-              Text(
-                h2.toUpperCase(),
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.grey
-                      : Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.primary,
               ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoCard(
-      BuildContext context,
-      _LocalSpacing spacing,
-      _LocalSizes sizes,
-      ) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: spacing.m, horizontal: spacing.m),
-      decoration: BoxDecoration(
-        color: Color.lerp(
-          Theme.of(context).scaffoldBackgroundColor,
-          Colors.white,
-          0.05,
-        )!,
-        borderRadius: BorderRadius.circular(spacing.m),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 6,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          _buildInfo(
-            context,
-            "Email",
-            "student@uni.edu.tr",
-            spacing,
-            sizes,
-            icon: Icons.mail_outline,
-          ),
-          Divider(color: Colors.grey.withOpacity(0.5)),
-          _buildInfo(
-            context,
-            "Department",
-            "Computer Science",
-            spacing,
-            sizes,
-            icon: Icons.business,
-          ),
-          Divider(color: Colors.grey.withOpacity(0.5)),
-          _buildInfo(
-            context,
-            "Class",
-            "Class of 2023",
-            spacing,
-            sizes,
-            icon: Icons.school_outlined,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfo(
-      BuildContext context,
-      String h1,
-      String h2,
-      _LocalSpacing spacing,
-      _LocalSizes sizes, {
-        IconData? icon,
-      }) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.08,
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(spacing.s),
-            decoration: BoxDecoration(
-              color: Color.lerp(
-                Theme.of(context).scaffoldBackgroundColor,
-                Colors.white,
-                0.1,
-              )!,
-              shape: BoxShape.circle,
+              child: const Text('Cancel'),
             ),
-            child: Icon(
-              icon,
-              color: Theme.of(context).colorScheme.primary,
-              size: sizes.icon * 0.5,
-            ),
-          ),
-          SizedBox(width: spacing.m),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(h1, style: Theme.of(context).textTheme.bodySmall),
-              Text(
-                h2,
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.grey
-                      : Colors.black,
-                ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.of(ctx).pop();
+                await authController.updateProfile(department: txt.text.trim());
+                Get.snackbar(
+                  'Updated',
+                  'Department updated',
+                  snackPosition: SnackPosition.BOTTOM,
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Colors.white,
               ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ================= BUTTONS (RESPONSIVE) =================
-  Widget _buildPrimaryButton(
-      BuildContext context,
-      _LocalSpacing spacing,
-      _LocalSizes sizes, {
-        required IconData icon,
-        required String label,
-        required Color color,
-        required VoidCallback onTap,
-      }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: MediaQuery.of(context).size.height * 0.06,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(spacing.m),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 6,
-              offset: const Offset(0, 4),
+              child: const Text('Save'),
             ),
           ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: Colors.white, size: sizes.icon * 0.7),
-            SizedBox(width: spacing.s),
-            Text(
-              label,
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(color: Colors.white),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLogoutButton(
-      BuildContext context,
-      _LocalSpacing spacing,
-      _LocalSizes sizes,
-      ) {
-    return GestureDetector(
-      onTap: () {
-        authController.logout();
-        Get.toNamed('/login');
+        );
       },
-      child: Container(
-        height: MediaQuery.of(context).size.height * 0.06,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Color.lerp(
-            Theme.of(context).scaffoldBackgroundColor,
-            Colors.white,
-            0.05,
-          )!,
-          borderRadius: BorderRadius.circular(spacing.m),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 6,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.logout, color: Colors.redAccent, size: sizes.icon * 0.7),
-            SizedBox(width: spacing.s),
-            Text(
-              "Log Out",
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(color: Colors.redAccent),
-            ),
-          ],
-        ),
-      ),
     );
   }
-}
 
-class _LocalSpacing {
-  final double xs, s, m, l, xl;
-  _LocalSpacing({required this.xs, required this.s, required this.m, required this.l, required this.xl});
-}
+  void _editClass(BuildContext context) {
+    final current = authController.appUser.value?.classOf ?? '';
+    final txt = TextEditingController(text: current);
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text('Edit Class'),
+          content: TextField(
+            controller: txt,
+            decoration: const InputDecoration(hintText: 'e.g. Class of 2026'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.primary,
+              ),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.of(ctx).pop();
+                await authController.updateProfile(classOf: txt.text.trim());
+                Get.snackbar(
+                  'Updated',
+                  'Class updated',
+                  snackPosition: SnackPosition.BOTTOM,
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-class _LocalPadding {
-  final EdgeInsets page, section;
-  _LocalPadding({required this.page, required this.section});
-}
+  int _computeWeeklyGoalsMet() {
+    final weeklySeconds = sessionController.weeklyBySubject.values.fold<int>(
+      0,
+      (sum, val) => sum + (val as int),
+    );
+    final weeklyMinutesTotal = weeklySeconds / 60.0;
 
-class _LocalSizes {
-  final double logo, icon, socialIcon, textSmall;
-  _LocalSizes({required this.logo, required this.icon, required this.socialIcon, required this.textSmall});
+    int met = 0;
+    final globalWeekly = goalController.getGlobalWeeklyGoal();
+    if (globalWeekly != null) {
+      if (weeklyMinutesTotal >= globalWeekly.targetMinutes) met++;
+    }
+
+    for (final g in goalController.weeklyGoals) {
+      if (g.subjectId == null || g.subjectId!.isEmpty) continue;
+      final subjectSeconds =
+          sessionController.weeklyBySubject[g.subjectId] ?? 0;
+      final subjectMinutes = (subjectSeconds as int) / 60.0;
+      if (subjectMinutes >= g.targetMinutes) met++;
+    }
+    return met;
+  }
 }

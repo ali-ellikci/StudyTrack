@@ -4,6 +4,8 @@ class AppUser {
   final String email;
   final int totalStudyMinutes;
   final String avatarUrl;
+  final String? department;
+  final String? classOf;
 
   AppUser({
     required this.uid,
@@ -11,6 +13,8 @@ class AppUser {
     required this.email,
     required this.totalStudyMinutes,
     required this.avatarUrl,
+    this.department,
+    this.classOf,
   });
 
   factory AppUser.fromMap(String uid, Map<String, dynamic> map) {
@@ -20,6 +24,8 @@ class AppUser {
       email: map['email'] ?? '',
       totalStudyMinutes: map['totalStudyMinutes'] ?? 0,
       avatarUrl: map['avatarUrl'] ?? '',
+      department: map['department'],
+      classOf: map['class'],
     );
   }
 }

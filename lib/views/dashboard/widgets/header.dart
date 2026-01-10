@@ -20,7 +20,6 @@ class DashboardHeader extends StatelessWidget {
           onTap: () => Get.toNamed('/profile'),
           child: Stack(
             children: [
-              // Avatar
               CircleAvatar(
                 radius: 24,
                 backgroundColor: Colors.grey[300],
@@ -31,7 +30,6 @@ class DashboardHeader extends StatelessWidget {
                     ? const Icon(Icons.person, color: Colors.white, size: 24)
                     : null,
               ),
-              // Online Indicator
               Positioned(
                 bottom: 0,
                 right: 0,

@@ -24,4 +24,41 @@ class MediaController extends GetxController {
 
     await authController.updateAvatarUrl(uid, downloadUrl);
   }
+
+  Future<XFile?> pickImageFromGallery() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    return image;
+  }
+
+  Future<String?> uploadPostImage(String uid, XFile image) async {
+    final file = File(image.path);
+    final ts = DateTime.now().millisecondsSinceEpoch;
+    final ref = FirebaseStorage.instance.ref('post_images/$uid/$ts.jpg');
+    await ref.putFile(file, SettableMetadata(contentType: 'image/jpeg'));
+    final url = await ref.getDownloadURL();
+    return url;
+  }
+
+  Future<String?> uploadPostImageWithProgress(
+    String uid,
+    XFile image,
+    void Function(double progress) onProgress,
+  ) async {
+    final file = File(image.path);
+    final ts = DateTime.now().millisecondsSinceEpoch;
+    final ref = FirebaseStorage.instance.ref('post_images/$uid/$ts.jpg');
+    final uploadTask = ref.putFile(
+      file,
+      SettableMetadata(contentType: 'image/jpeg'),
+    );
+    uploadTask.snapshotEvents.listen((snapshot) {
+      final total = snapshot.totalBytes;
+      final transferred = snapshot.bytesTransferred;
+      if (total > 0) onProgress(transferred / total);
+    });
+    final snapshot = await uploadTask;
+    final url = await snapshot.ref.getDownloadURL();
+    onProgress(1.0);
+    return url;
+  }
 }

@@ -17,12 +17,10 @@ class SubjectController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // If a user is already signed-in, load immediately
     final current = _auth.currentUser;
     if (current != null) {
       fetchSubjects(current.uid);
     }
-    // React to future auth changes to avoid null crashes on fresh installs
     _auth.authStateChanges().listen((u) {
       if (u != null) {
         fetchSubjects(u.uid);

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// Kendi dosya yollarına göre bunları ayarla:
 import '../../../controllers/subject_controller.dart';
 import '../../../models/subject_model.dart';
 
@@ -12,7 +11,6 @@ class SubjectListBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      // Controller'daki listeyi alıyoruz
       final subjects = subjectController.subjects;
 
       if (subjects.isEmpty) {
@@ -20,21 +18,18 @@ class SubjectListBuilder extends StatelessWidget {
       }
 
       return ListView.builder(
-        shrinkWrap: true, // İç içe scroll sorunu olmasın diye
+        shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         padding: EdgeInsets.zero,
         itemCount: subjects.length,
         itemBuilder: (context, index) {
-          // Aşağıdaki fonksiyonu çağırıyoruz
           return _buildSubjectCard(context, subjects[index]);
         },
       );
     });
   }
 
-  // --- KART TASARIMI (FONKSİYON OLARAK) ---
   Widget _buildSubjectCard(BuildContext context, SubjectModel subject) {
-    // Rengi parametre almadığımız için direkt Theme'den çekiyoruz
     final Color cardColor = Theme.of(context).brightness == Brightness.light
         ? Colors.white
         : Colors.blue;
@@ -50,12 +45,10 @@ class SubjectListBuilder extends StatelessWidget {
       decoration: BoxDecoration(
         color: cardColor,
         borderRadius: BorderRadius.circular(20),
-        // Kart rengi ile arka plan aynıysa sınırları belli olsun diye ince border:
         border: Border.all(color: Colors.grey.shade300, width: 1.5),
       ),
       child: Row(
         children: [
-          // Sol İkon (Minimal Tasarım)
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
@@ -65,8 +58,6 @@ class SubjectListBuilder extends StatelessWidget {
             child: Icon(Icons.book_outlined, color: textColor, size: 20),
           ),
           const SizedBox(width: 16),
-
-          // Ders Adı
           Expanded(
             child: Text(
               subject.name,

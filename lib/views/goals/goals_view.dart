@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../controllers/subject_controller.dart';
-// Local UI metrics (moved from core/ui)
 
-import 'custom_tab_switcher.dart';
+
+import 'widgets/custom_tab_switcher.dart';
 import 'goals_view_ui_controller.dart';
 import 'general_goals_view.dart';
 import 'subjects_goals_view.dart';
@@ -12,13 +12,13 @@ import 'subjects_goals_view.dart';
 class GoalsView extends StatelessWidget {
   GoalsView({super.key});
 
-  /// UI controller – tek instance
+
   final GoalsUiController uiController = Get.put(
     GoalsUiController(),
     permanent: true,
   );
 
-  /// SubjectController zaten globalde put edilmiş
+
   final SubjectController subjectController = Get.find<SubjectController>();
 
   @override
@@ -36,12 +36,7 @@ class GoalsView extends StatelessWidget {
       page: EdgeInsets.symmetric(horizontal: w * 0.06, vertical: h * 0.01),
       section: EdgeInsets.only(top: h * 0.02),
     );
-    final sizes = _LocalSizes(
-      logo: h * 0.07,
-      icon: h * 0.04,
-      socialIcon: h * 0.03,
-      textSmall: h * 0.016,
-    );
+
 
     return Scaffold(
       appBar: AppBar(
@@ -52,14 +47,13 @@ class GoalsView extends StatelessWidget {
           child: Divider(
             height: spacing.xs,
             thickness: 1,
-            color: Colors.grey.withOpacity(0.5),
+            color: Colors.grey.withValues(alpha:0.5),
           ),
         ),
       ),
       body: SafeArea(
         child: Column(
           children: [
-            /// TAB SWITCHER
             Obx(
               () => CustomTabSwitcher(
                 isGeneralSelected: uiController.isGeneralSelected.value,
@@ -69,7 +63,6 @@ class GoalsView extends StatelessWidget {
 
             SizedBox(height: spacing.m),
 
-            /// HEADER
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Align(
@@ -86,7 +79,6 @@ class GoalsView extends StatelessWidget {
 
             SizedBox(height: spacing.m),
 
-            /// CONTENT
             Expanded(
               child: Obx(
                 () => SingleChildScrollView(
@@ -114,7 +106,3 @@ class _LocalPadding {
   _LocalPadding({required this.page, required this.section});
 }
 
-class _LocalSizes {
-  final double logo, icon, socialIcon, textSmall;
-  _LocalSizes({required this.logo, required this.icon, required this.socialIcon, required this.textSmall});
-}

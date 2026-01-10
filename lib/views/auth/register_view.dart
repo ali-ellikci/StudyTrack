@@ -7,7 +7,7 @@ import 'widgets/custom_button.dart';
 import 'widgets/social_button.dart';
 import '../../controllers/auth_controller.dart';
 
-// Local UI metrics (moved from core/ui)
+
 
 final emailController = TextEditingController();
 final passwordController = TextEditingController();
@@ -16,7 +16,7 @@ final confirmPasswordController = TextEditingController();
 final authController = Get.find<AuthController>();
 
 class RegisterView extends StatelessWidget {
-  RegisterView({super.key});
+  const RegisterView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +49,12 @@ class RegisterView extends StatelessWidget {
             children: [
               SizedBox(height: spacing.s),
 
-              // LOGO
+
               Container(
                 width: sizes.logo,
                 height: sizes.logo,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha:0.1),
                   borderRadius: BorderRadius.circular(spacing.s),
                 ),
                 child: Icon(
@@ -84,7 +84,7 @@ class RegisterView extends StatelessWidget {
 
               SizedBox(height: spacing.l),
 
-              // FULL NAME
+
               _label(context, "Full Name"),
               SizedBox(height: spacing.xs),
               CustomTextField(
@@ -95,7 +95,6 @@ class RegisterView extends StatelessWidget {
 
               SizedBox(height: spacing.m),
 
-              //  EMAIL
               _label(context, "Email"),
               SizedBox(height: spacing.xs),
               CustomTextField(
@@ -107,7 +106,7 @@ class RegisterView extends StatelessWidget {
 
               SizedBox(height: spacing.m),
 
-              //  PASSWORD
+
               _label(context, "Password"),
               SizedBox(height: spacing.xs),
               CustomTextField(
@@ -119,7 +118,7 @@ class RegisterView extends StatelessWidget {
 
               SizedBox(height: spacing.m),
 
-              // CONFIRM PASSWORD
+
               _label(context, "Confirm Password"),
               SizedBox(height: spacing.xs),
               CustomTextField(
@@ -131,7 +130,7 @@ class RegisterView extends StatelessWidget {
 
               SizedBox(height: spacing.l),
 
-              // REGISTER BUTTON
+
               CustomButton(
                 text: 'Register',
                 onPressed: () async {
@@ -149,7 +148,7 @@ class RegisterView extends StatelessWidget {
 
               SizedBox(height: spacing.l),
 
-              // DIVIDER
+
               Row(
                 children: [
                   Expanded(child: Divider(color: Colors.grey[300])),
@@ -170,7 +169,7 @@ class RegisterView extends StatelessWidget {
 
               SizedBox(height: spacing.m),
 
-              //  SOCIAL LOGIN
+
               Row(
                 children: [
                   Expanded(
@@ -199,7 +198,7 @@ class RegisterView extends StatelessWidget {
 
               SizedBox(height: spacing.l),
 
-              //  LOGIN REDIRECT
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

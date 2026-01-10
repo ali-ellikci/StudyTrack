@@ -23,7 +23,7 @@ class SubjectModel {
       isArchived: map['isArchived'],
       createdAt: map['createdAt'] != null
           ? (map['createdAt'] as Timestamp).toDate()
-          : DateTime.now(), // veya null yapabilirsin
+          : DateTime.now(),
     );
   }
 

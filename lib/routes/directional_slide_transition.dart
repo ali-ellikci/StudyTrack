@@ -13,7 +13,6 @@ class DirectionalSlideTransition extends CustomTransition {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    // Expect arguments like {'dir': 'ltr' | 'rtl'}
     final args = Get.arguments;
     final String dir = (args is Map && (args['dir'] == 'ltr' || args['dir'] == 'rtl'))
         ? args['dir'] as String

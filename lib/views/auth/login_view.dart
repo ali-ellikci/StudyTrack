@@ -7,14 +7,14 @@ import 'widgets/custom_button.dart';
 import 'widgets/social_button.dart';
 import '../../controllers/auth_controller.dart';
 
-// Local UI metrics (moved from core/ui)
+
 
 final emailController = TextEditingController();
 final passwordController = TextEditingController();
 final authController = Get.find<AuthController>();
 
 class LoginView extends StatelessWidget {
-  LoginView({super.key});
+  const LoginView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,6 @@ class LoginView extends StatelessWidget {
             children: [
               SizedBox(height: spacing.xl),
 
-              /// LOGO
               Center(
                 child: Container(
                   width: sizes.logo,
@@ -55,7 +54,7 @@ class LoginView extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Theme.of(
                       context,
-                    ).colorScheme.primary.withOpacity(0.1),
+                    ).colorScheme.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(spacing.m),
                   ),
                   child: Icon(
@@ -68,7 +67,6 @@ class LoginView extends StatelessWidget {
 
               SizedBox(height: spacing.l),
 
-              /// TITLE
               Text(
                 "Welcome Back",
                 textAlign: TextAlign.center,
@@ -77,7 +75,6 @@ class LoginView extends StatelessWidget {
 
               SizedBox(height: spacing.s),
 
-              /// SUBTITLE
               Text(
                 "Log in to continue your streak and reach your goals",
                 textAlign: TextAlign.center,
@@ -88,7 +85,7 @@ class LoginView extends StatelessWidget {
 
               SizedBox(height: spacing.xl),
 
-              /// EMAIL LABEL
+
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -110,7 +107,7 @@ class LoginView extends StatelessWidget {
 
               SizedBox(height: spacing.m),
 
-              /// PASSWORD LABEL
+
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -132,37 +129,39 @@ class LoginView extends StatelessWidget {
 
               SizedBox(height: spacing.xs),
 
-              /// FORGOT PASSWORD
+
               Align(
                 alignment: Alignment.centerRight,
-                child: Text(
-                  "Forgot Password?",
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
+                child: GestureDetector(
+                  onTap: () async {
+                    final email = emailController.text.trim();
+                    await authController.resetPassword(email);
+                  },
+                  child: Text(
+                    "Forgot Password?",
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                 ),
               ),
 
               SizedBox(height: spacing.m),
 
-              /// LOGIN BUTTON
+
               CustomButton(
                 text: 'Log In',
                 onPressed: () async {
-                  print('[LOGIN BTN] Pressed');
                   final email = emailController.text.trim();
-                  final maskedEmail = email.isEmpty ? '<empty>' : email;
-                  print('[LOGIN BTN] Email: ' + maskedEmail);
+
                   final ok = await authController.login(
                     email,
                     passwordController.text.trim(),
                   );
                   if (ok) {
-                    print('[LOGIN BTN] Login success → navigate to /dashboard');
                     Get.offAllNamed('/dashboard');
                   } else {
-                    print('[LOGIN BTN] Login failed, staying on LoginView');
                   }
                 },
                 isLoading: false,
@@ -170,7 +169,6 @@ class LoginView extends StatelessWidget {
 
               SizedBox(height: spacing.xl),
 
-              /// DIVIDER
               Row(
                 children: [
                   const Expanded(child: Divider()),
@@ -187,7 +185,6 @@ class LoginView extends StatelessWidget {
 
               SizedBox(height: spacing.l),
 
-              /// SOCIAL BUTTONS
               Row(
                 children: [
                   Expanded(
@@ -218,7 +215,7 @@ class LoginView extends StatelessWidget {
 
               SizedBox(height: spacing.l),
 
-              /// REGISTER REDIRECT
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

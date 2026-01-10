@@ -13,12 +13,9 @@ class AuthGate extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       final u = authController.firebaseUser.value;
-      print('[AuthGate] build: user=' + (u?.uid ?? 'null'));
       if (u == null) {
-        print('[AuthGate] → showing LoginView');
         return LoginView();
       } else {
-        print('[AuthGate] → showing DashboardView');
         return DashboardView();
       }
     });

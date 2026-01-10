@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../controllers/subject_controller.dart';
 import '../../controllers/goal_controller.dart';
 import '../../models/subject_model.dart';
+import 'widgets/subject_goal_card.dart';
 
 class SubjectsGoalsView extends StatelessWidget {
   SubjectsGoalsView({super.key});
@@ -27,7 +28,7 @@ class SubjectsGoalsView extends StatelessWidget {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: subjectController.subjects.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 16),
+            separatorBuilder: (_, _) => const SizedBox(height: 16),
             itemBuilder: (_, i) {
               final subject = subjectController.subjects[i];
               return Obx(() {
@@ -160,74 +161,3 @@ class SubjectsGoalsView extends StatelessWidget {
   }
 }
 
-class SubjectGoalCard extends StatelessWidget {
-  final SubjectModel subject;
-  final double weeklyHours;
-  final VoidCallback onTap;
-
-  const SubjectGoalCard({
-    super.key,
-    required this.subject,
-    required this.weeklyHours,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        height: 80,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 6,
-              height: 40,
-              margin: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    subject.name,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "${weeklyHours.toStringAsFixed(1)} h / week",
-                    style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
-                  ),
-                ],
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(right: 16),
-              child: Icon(Icons.edit, size: 18, color: Colors.grey),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

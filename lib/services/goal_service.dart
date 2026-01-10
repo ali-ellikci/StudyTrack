@@ -22,7 +22,6 @@ class GoalService {
   }) async {
     final docId = "$uId-daily-${subjectId ?? 'global'}";
     final ref = _db.collection('goals').doc(docId);
-    // Write with merge without pre-read to avoid an extra network call
     await ref.set({
       'userId': uId,
       'type': 'daily',
@@ -49,7 +48,6 @@ class GoalService {
   }) async {
     final docId = "$uId-weekly-${subjectId ?? 'global'}";
     final ref = _db.collection('goals').doc(docId);
-    // Write with merge without pre-read to avoid an extra network call
     await ref.set({
       'userId': uId,
       'type': 'weekly',

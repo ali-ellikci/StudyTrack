@@ -23,8 +23,6 @@ class SessionService {
         .where("userId", isEqualTo: uId)
         .get();
     int totalDocs = snapshot.docs.length;
-
-    print("Toplam session: $totalDocs");
     final total = snapshot.docs.fold<int>(
       0,
       (sum, doc) => sum + ((doc.data()['duration'] ?? 0) as int),
@@ -32,7 +30,7 @@ class SessionService {
     return total;
   }
 
-  /// Bugün ders yap'ılan toplam süre (dakika)
+  
   Future<int> getTodayStudyTime({required String uId}) async {
     final now = DateTime.now();
     final todayStart = DateTime(now.year, now.month, now.day);
@@ -55,7 +53,7 @@ class SessionService {
     return total;
   }
 
-  /// Hafta içinde per subject progress
+  
   Future<Map<String, int>> getWeeklyStudyTimeBySubject({
     required String uId,
   }) async {
@@ -85,7 +83,7 @@ class SessionService {
     return bySubject;
   }
 
-  /// Bugün per subject progress
+  
   Future<Map<String, int>> getTodayStudyTimeBySubject({
     required String uId,
   }) async {

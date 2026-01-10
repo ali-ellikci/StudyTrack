@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Goal {
-  final String id; // docId
+  final String id;
   final String userId;
-  final String type; // daily | weekly
+  final String type;
 
   final String? subjectId;
 

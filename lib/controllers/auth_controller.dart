@@ -107,6 +107,37 @@ class AuthController extends GetxController {
       return false;
     }
   }
+  
+  Future<void> resetPassword(String email) async {
+    if (email.isEmpty) {
+      Get.snackbar(
+        "Password Reset",
+        "Please enter your email to reset password.",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      Get.snackbar(
+        "Password Reset",
+        "Password reset email sent to $email",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar(
+        "Password Reset Error",
+        e.message ?? e.code,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      Get.snackbar(
+        "Password Reset Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
 
   Future<void> logout() async {
     try {
@@ -133,7 +164,28 @@ class AuthController extends GetxController {
         email: appUser.value!.email,
         totalStudyMinutes: appUser.value!.totalStudyMinutes,
         avatarUrl: downloadUrl,
+        department: appUser.value!.department,
+        classOf: appUser.value!.classOf,
       );
     }
+  }
+
+  Future<void> updateProfile({String? department, String? classOf}) async {
+    final current = appUser.value;
+    if (current == null) return;
+    await _userService.updateProfileFields(
+      current.uid,
+      department: department,
+      classOf: classOf,
+    );
+    appUser.value = AppUser(
+      uid: current.uid,
+      username: current.username,
+      email: current.email,
+      totalStudyMinutes: current.totalStudyMinutes,
+      avatarUrl: current.avatarUrl,
+      department: department ?? current.department,
+      classOf: classOf ?? current.classOf,
+    );
   }
 }

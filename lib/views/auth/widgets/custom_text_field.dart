@@ -58,27 +58,26 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 ),
                 onPressed: () {
                   setState(() {
-                    _isObscure = !_isObscure; // Görünürlüğü tersine çevir
+                    _isObscure = !_isObscure;
                   });
                 },
               )
             : null,
 
-        //------ KENARLIKLAR --------
 
-        // Tıklanmamış Durum
+
+
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(color: borderColor, width: 1),
         ),
 
-        // Tıklanmış Durum
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(color: AppColors.primaryLight, width: 1.5),
         ),
 
-        // Hata Durumu
+
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: const BorderSide(color: AppColors.error, width: 1),

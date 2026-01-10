@@ -3,7 +3,7 @@ import 'app_colors.dart';
 import 'app_text_theme.dart';
 
 class AppTheme {
-  // ================= LIGHT THEME =================
+  
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
@@ -23,15 +23,13 @@ class AppTheme {
         error: AppColors.error,
         onSurface: AppColors.textPrimaryLight,
       ),
-
-      // ✅ Material 3 uyumlu
+      
       cardTheme: CardThemeData(
         color: AppColors.surfaceLight,
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       ),
-
-      // ✅ LOGIN butonları burada çözüldü
+      
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primaryLight,
@@ -45,7 +43,7 @@ class AppTheme {
     );
   }
 
-  // ================= DARK THEME =================
+  
   static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,
@@ -65,8 +63,7 @@ class AppTheme {
         error: AppColors.error,
         onSurface: AppColors.textPrimaryDark,
       ),
-
-      // ✅ Material 3 uyumlu
+      
       cardTheme: CardThemeData(
         color: AppColors.surfaceDark,
         elevation: 0,

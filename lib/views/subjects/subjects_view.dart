@@ -11,7 +11,7 @@ class LessonsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Local UI metrics (moved from core/ui)
+    
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.width;
     final spacing = _LocalSpacing(
@@ -102,7 +102,7 @@ class LessonsView extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             const Text(
-              "Yeni Ders Ekle",
+              "Add New Subject",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -116,7 +116,7 @@ class LessonsView extends StatelessWidget {
                     : Colors.black,
               ),
               decoration: InputDecoration(
-                hintText: "Örn: Matematik, İngilizce...",
+                hintText: "e.g., Mathematics, English...",
                 hintStyle: TextStyle(color: Colors.grey.shade500),
                 filled: true,
                 fillColor: const Color(0xFFF5F7FA),
@@ -152,7 +152,7 @@ class LessonsView extends StatelessWidget {
                   elevation: 0,
                 ),
                 child: const Text(
-                  "Oluştur",
+                  "Create",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),

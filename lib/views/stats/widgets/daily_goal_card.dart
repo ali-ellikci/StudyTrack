@@ -17,8 +17,7 @@ class DailyGoalCard extends StatelessWidget {
         (g) => !g.hasSubject,
       );
 
-      final int dailyTargetMinutes = dailyGoal?.targetMinutes ?? 240;
-      // Convert seconds to minutes for calculations
+        final int dailyTargetMinutes = dailyGoal?.targetMinutes ?? 240;
       final double currentDailyMinutes =
           sessionController.todayStudyTime.value / 60.0;
 

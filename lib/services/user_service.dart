@@ -10,13 +10,14 @@ class UserService {
     required String email,
     required String password,
   }) async {
-    // Retry on transient Firestore outages
     final payload = {
       "avatarUrl": "",
       "createdAt": FieldValue.serverTimestamp(),
       "email": email,
       "totalStudyMinutes": 0,
       "username": username,
+      "department": null,
+      "class": null,
     };
 
     int attempt = 0;
@@ -53,5 +54,16 @@ class UserService {
     });
   }
 
+  Future<void> updateProfileFields(
+    String uid, {
+    String? department,
+    String? classOf,
+  }) async {
+    final Map<String, dynamic> update = {};
+    if (department != null) update['department'] = department;
+    if (classOf != null) update['class'] = classOf;
+    if (update.isEmpty) return;
+    await _db.collection("users").doc(uid).update(update);
+  }
 
 }

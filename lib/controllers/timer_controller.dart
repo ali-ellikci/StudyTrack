@@ -28,7 +28,6 @@ class TimerController extends GetxController with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed && isRunning.value) {
-      // 👇 EKRAN AÇILDI → GERÇEK ZAMANI HESAPLA
       _recalculateRemaining();
     }
   }

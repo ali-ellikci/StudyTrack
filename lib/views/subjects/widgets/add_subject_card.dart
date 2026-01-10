@@ -50,15 +50,14 @@ class AddSubjectCard extends StatelessWidget {
 
     showModalBottomSheet(
       context: context,
-      isScrollControlled:
-          true, // Klavye açılınca ekranın yukarı kayması için şart
-      backgroundColor: Colors.transparent, // Köşeleri yuvarlatmak için
+        isScrollControlled:
+          true,
+        backgroundColor: Colors.transparent,
       builder: (context) => Container(
         padding: EdgeInsets.only(
           top: 20,
           left: 20,
           right: 20,
-          // Klavye yüksekliği kadar alttan boşluk bırakır (ÖNEMLİ)
           bottom: MediaQuery.of(context).viewInsets.bottom + 20,
         ),
         decoration: const BoxDecoration(
@@ -66,10 +65,9 @@ class AddSubjectCard extends StatelessWidget {
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.min, // İçerik kadar yer kaplasın
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Üstteki gri tutamaç çizgisi
             Center(
               child: Container(
                 width: 40,
@@ -83,18 +81,17 @@ class AddSubjectCard extends StatelessWidget {
             const SizedBox(height: 20),
 
             const Text(
-              "Yeni Ders Ekle",
+              "Add New Subject",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 16),
 
-            // Yazı Alanı
             TextField(
               controller: textCtrl,
-              autofocus: true, // Açılır açılmaz klavye gelsin
+              autofocus: true,
               decoration: InputDecoration(
-                hintText: "Örn: Matematik, İngilizce...",
+                hintText: "e.g., Mathematics, English...",
                 filled: true,
                 fillColor: const Color(0xFFF5F7FA),
                 border: OutlineInputBorder(
@@ -110,26 +107,17 @@ class AddSubjectCard extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // Kaydet Butonu
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
                   if (textCtrl.text.trim().isNotEmpty) {
-                    // --- BURAYI GÜNCELLEDİM ---
-
-                    // 1. Konsola yazdır
-                    print("Eklenecek Ders Adı: ${textCtrl.text.trim()}");
-
-                    // 2. Sayfayı kapat (Test ederken işlevsel hissettirsin diye)
+                    
                     Navigator.pop(context);
-
-                    // İleride açacağın kod:
-                    // Get.find<SubjectController>().addSubject(textCtrl.text.trim());
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black, // Tasarımına göre renk
+                  backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
@@ -138,7 +126,7 @@ class AddSubjectCard extends StatelessWidget {
                   elevation: 0,
                 ),
                 child: const Text(
-                  "Oluştur",
+                  "Create",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),

@@ -3,7 +3,7 @@ import '../../../theme/app_colors.dart';
 
 class SocialButton extends StatelessWidget {
   final String label;
-  final Widget icon; // Widget almaya devam ediyoruz (Google için şart)
+  final Widget icon;
   final VoidCallback onPressed;
 
   const SocialButton({
@@ -21,7 +21,6 @@ class SocialButton extends StatelessWidget {
       height: 56,
       child: OutlinedButton.icon(
         onPressed: onPressed,
-        // DİKKAT: .icon kurucusu, hizalamayı otomatik yapar
         icon: icon,
         label: Text(
           label,
@@ -39,7 +38,6 @@ class SocialButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           backgroundColor: isDark ? AppColors.surfaceDark : Colors.transparent,
-          // İkon ile yazı arasındaki boşluk ayarı (gerekirse)
           padding: const EdgeInsets.symmetric(horizontal: 16),
         ),
       ),

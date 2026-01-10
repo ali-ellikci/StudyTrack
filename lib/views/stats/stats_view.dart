@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// Local UI metrics (moved from core/ui)
 import 'widgets/daily_goal_card.dart';
 import 'widgets/weekly_activity_card.dart';
 import '../dashboard/widgets/weekly_goal_card.dart';
