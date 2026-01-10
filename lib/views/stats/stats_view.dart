@@ -30,7 +30,7 @@ class StatsView extends StatelessWidget {
     );
     return Scaffold(
       appBar: AppBar(
-        title: Text("Merhaba"),
+        title: Text("Stats"),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(spacing.xs),
